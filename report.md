@@ -41,7 +41,7 @@ We are not sure how long this will take as the array size grows, and how long ea
 # Initial Results
 
 ## Evidence your implementation works
-We were able to run a very small-scale simulation featuring a couple agents, a couple rewards, and a couple obstacles. The agents are able to freely move around outside the obstacles and collect reward points (revenue) by visiting the concession stands.
+We were able to run a very small-scale simulation featuring a small amount of agents, a couple rewards, and a couple obstacles. The agents are able to freely move around outside the obstacles and collect reward points (revenue) by visiting the concession stands.
 
 ![Grid Traversal Simulation](simulation.gif)
 
