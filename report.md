@@ -41,25 +41,36 @@ We are not sure how long this will take as the array size grows, and how long ea
 # Initial Results
 
 ## Evidence your implementation works
+We were able to run a very small-scale simulation featuring a couple agents, a couple rewards, and a couple obstacles. The agents are able to freely move around outside the obstacles and collect reward points (revenue) by visiting the concession stands.
 
 ## Basic performance metrics
+We were able to run 50 simulations of 1000 timestamps quickly with our small-scale implementation, and figure out the best configuration among 50 random configurations based on total revenue.
 
 ## Test case results
+FILL IN LATER
 
 ## Current limitations
+This is obviously an extremely simple implementation as basically a proof of concept. It does not consider obstacles, actual behvaior (you would want to watch the game, not walk around aimlessly), doesn't include prices, and only uses 1 agent.
 
 ## Resource usage measurements
+At this small scale, it is impossible to notice the strain on a modern CPU. As we scale up to a bigger stadium and more agents, we will have to come back and revisit this section.
 
 ## Unexpected challenges
+Most of the challenges we have faced so far are expected. The only unexpected challenge we have faced so far is realizing that modeling human behavior might be even more difficult that we initially thought.
 
 # Next Steps
 
 ## Immediate improvements needed
+We need to start modeling human behavior soon. Instead of us having rewards, tiles, and obstacles, we need to create objects for these with different properties as well as seats and other stadium components. This will allow us to further evaluate the feasibility of this project idea in modeling actual human behavior.
 
 ## Technical challenges to address
+While we see no signs of strain on our small implementation, it is an open question whether our local machines will hold up to thousands of simulations of thousands of agents in large stadiums. We may have to streamline our code to make it more efficient at large scales. We may have to leverage GPUs, although we would need to find an optimized framework that supports simulation and GPU usage (maybe CuPy).
 
 ## Questions you need help with
+We mainly need help finding the real-life data numbers that will help us validate our simulations. This is not information that is readily available, so we will have to work with what we're given.
 
 ## Alternative approaches to try
+While this project itself does not have alternative approaches, we have considered doing this simulation in different scenarios that may be easier to do. An example of another project in this category would be modeling the most optimal way to board or deboard an airplane. There are a lot less behavior models and variables to take in to model that, and it would still keep the core idea and be an important problem to address.
 
 ## What you've learned so far
+We have learned that modeling human behavior will be more difficult than original anticipated. However, the idea shows some promise provided that the neccessary data can be obtained.
