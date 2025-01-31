@@ -47,7 +47,7 @@ We were able to run a very small-scale simulation featuring a couple agents, a c
 
 
 ## Basic performance metrics
-We were able to run 50 simulations of 1000 timestamps quickly with our small-scale implementation, and figure out the best configuration among 50 random configurations based on total revenue.
+We were able to run 10 simulations of 100 timestamps quickly with our small-scale implementation, and figure out the best configuration among the 10 random configurations based on total revenue.
 
 ## Test case results
 FILL IN LATER
