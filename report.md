@@ -50,7 +50,7 @@ We were able to run a very small-scale simulation featuring a small amount of ag
 We were able to run 10 simulations of 100 timestamps quickly with our small-scale implementation, and figure out the best configuration among the 10 random configurations based on total revenue.
 
 ## Test case results
-FILL IN LATER
+From our tests, we were able to observe that with random movement, the best distribution of reward squares were squares that were more or less evenly distributed across our grid. 
 
 ## Current limitations
 This is obviously an extremely simple implementation as basically a proof of concept. It does not consider obstacles, actual behvaior (you would want to watch the game, not walk around aimlessly), doesn't include prices, and only uses 1 agent.
