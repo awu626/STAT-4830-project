@@ -1,79 +1,94 @@
 # Problem Statement
 
 ## What are you optimizing? (Be specific)
-We are optimizng the location of movable concession stands within existing stadiums in order to maximize revenue based on crowd behavior.
+Our group aims to optimize and fine-tune a GRPO model from Unsloth. Unsloth is a system that allows models to learn through GRPO (Group Relative Policy Optimization) with significantly less VRAM than before. This has made it possible turn standard models into reasoning models with custom rewards without using insane amounts of VRAM. We will be following Step 6 on Unsloth's website (https://unsloth.ai/blog/r1-reasoning) and optimizing a custom model to tackle standardized testing preparation.
 
 ## Why does this problem matter?
-The sports industry is huge, and concessions are a non-negliable part of the revenue taken in by venues. By optimizing the location of the concession stands for different games, venues can increase their profit margins.
+A GRPO-based model is able to independently be able to provide not only the answer to a standardized test question but also reasoning behind it. Knowing this, a model highly proficient in this will significantly increase the productivity of people studying for these tests, as it will be able to provide tailored explanations to any issue students encounter.
 
 ## How will you measure success?
-We will measure success by comparing our simulation data to data we can obtain from actual venues. We can fine-tune our simulation parameters based on current layouts and known revenue, and then we can try to optimize given the same crowd-behvaior parameters.
+We will measure success both numerically (by giving a practice test/practice bank) and recording scores and also qualitatively by analyzing the reasoning output and seeing if it makes sense.
 
 ## What are your constraints?
-Our simulation will carry a couple constraints due to the inherent difficulty in predicting human behavior and also lack of readily available data to help fine-tune our simulation. We will have to abstract human behavior down to a few classes. While this is a big constraint, we are reasonably confident it is possible given we have seen it done before.
+The main constraints involve compute limitations, as training a GRPO (Gradient-based Policy Optimization) model on standardized test reasoning tasks requires substantial resources. Memory constraints may arise when fine-tuning large models, especially with long-context reasoning tasks. Additionally, data constraints include the availability of high-quality standardized test datasets with detailed explanations, as reasoning-based models require strong grounding in logical and verbal reasoning.
 
 ## What data do you need?
-We will need data on how humans behave at sports games, as well as how much they spend and the prices at those games. This will help us get our simulation tuned to the actual human behavior.
+We will need question and answer banks from standardized tests. Our thought is that SAT/ACT preparation will be the easiest to find.
 
 ## What could go wrong?
-This is a fairly novel project for our team as we have not worked with simulations before. We anticipate some time needed to get accustomed to it and to tune our simulations. Human behavior is just something that is difficult to model. Additionally, data may be hard to obtain. The layout of certain stadiums may also be something that is difficult to model, especially if they contain many floors of concessions. Obviously, there are a lot of intricate details that we cannot model within a reasonable timeframe. Our hope is that these have just a small impact on overall behavior.
+Several challenges could arise, including mode collapse, where the model overfits to certain types of reasoning patterns instead of learning general strategies. Sparse rewards in reinforcement learning can make optimization difficult, requiring careful reward shaping to avoid bad solutions. Lastly, scalability issues may arise if the GRPO model struggles with long-context reasoning in standardized test questions.
 
 
 # Technical Approach
 
 ## Mathematical formulation (objective function, constraints)
-Our objective function is the revenue generated across all concession stands. It's subject to the constraints of human behavior (how much people are willing to pay, walk, etc).
+Our objective function is a combination of the score the model can receive on a bank of standardized testing practice questions and also the perceived quality of its reasoning.
+
+Specifically, we are looking at:
+
+$$
+\theta^* = \arg\max_{\theta} \mathbb{E}_{P_{\theta}} [ R(s, a) ]
+$$
+
+where R is the reward function and P is the policy.
+
 
 ## Algorithm/approach choice and justification
-We are going to use a simulation to model behavior. This will allow us to simulate the situation and get data for different configurations. It will also allow us to run multiple trials fairly quickly, something that will be instrumental in finding the best configurations.
+The primary approach is Gradient-based Policy Optimization (GRPO), a policy gradient method that improves the model’s reasoning ability via reinforcement learning (RL). Justification for GRPO:
+
+Handles long-horizon reasoning → Unlike supervised fine-tuning, GRPO can optimize multi-step reasoning paths.
+Adaptive improvement → Uses reward-based updates to reinforce better reasoning chains.
+Avoids overconfidence → Unlike standard transformers, GRPO gradually improves response distribution through sampled trials.
+
 
 ## Implementation strategy
-Our implementation will likely consist of an array with objects (walkway, concession stand, seat, obstacle, etc) in which rational agents navigate around. Initially, we will model behavior with simple models, but as our experience levels grow we can get more intricate and detailed. The agents will be able to explore, move around, and interact with things around the map.
+We will use standardized test datasets (MMLU, ARC, SAT/GRE datasets), and tokenize these reasoning-based questions. We'll start with a baseline model like Unsloth LLaMA-3 8B (or maybe something smaller, depending on training time). Then, we'll implement a supervised fine-tuning baseline with GRPO. It will have states (contexts) and actions (responses), and we will train and evaluate this. Finally, we will tune it on more complex reasoning tasks.
+
 
 ## Validation methods
-As mentioned above, we will validate based on the availability of real-world data. By replicating stadiums, we can adjust our human behavior models until the numbers start to look like the real values. Then, we can change configurations with the same parameters to find optimal arrangements.
+We will look at the score the tuned model is able to achieve on different test banks. We will also look into Chain-of-Thought (CoT) metrics to evaluate how strong the reasoning is. Finally, we will use limited human validation to assess whether things make sense or not.
 
 
 ## Resource requirements and constraints
-We are not sure how long this will take as the array size grows, and how long each simulation will need to run for. We will most likely run reduced-people simulations compared to real life, that way we don't need to model behaviors of 60,000+ people. We will just have to tune things like balking threshold in order to make sure lines stay reasonable.
+Training time and capacity will likely be a challenge for us. Unsloth specifies that a bare minimum of 7 GB VRAM is required. We have at least two local GPUs within the group that have more than this, and also the Colab-provided Tesla T4 GPU. However, we noticed while running initial experimentation that the Tesla T4 trained quite slowly. We may consider moving to a smaller model (2.5B parameters would be a decent option) if training is too lengthy.
 
 
 # Initial Results
 
 ## Evidence your implementation works
-We were able to run a very small-scale simulation featuring a small amount of agents, a couple rewards, and a couple obstacles. The agents are able to freely move around outside the obstacles and collect reward points (revenue) by visiting the concession stands.
+We started off by running the stock notebook provided and experimenting with it to get some training results.
 
-![Grid Traversal Simulation](simulation.gif)
+![image](https://github.com/user-attachments/assets/0a5f29d5-4c74-48ad-b077-e78b23f7a750)
 
 
 ## Basic performance metrics
-We were able to run 10 simulations of 100 timestamps quickly with our small-scale implementation, and figure out the best configuration among the 10 random configurations based on total revenue.
+The base notebook trained on the T4 GPU at a rate of about 1 step per minute, and it was able to collect some reward. Due to free-tier Colab limits, we were unable to progress further but this will be rectified in the future with local training or Colab Pro. 
 
 ## Test case results
-From our tests, we were able to observe that with random movement, the best distribution of reward squares were squares that were more or less evenly distributed across our grid. 
+We observed that the rewards started increasing very slowly at first, but eventually picked up more steam. Average-of-5 rewards for steps seem to be going up steadily as the base model trains.
 
 ## Current limitations
-This is obviously an extremely simple implementation as basically a proof of concept. It does not consider obstacles, actual behvaior (you would want to watch the game, not walk around aimlessly), doesn't include prices, and only uses 1 agent.
+Our biggest issue right now is compute speed as the training is very slow on T4, and also the amount of compute units provided in the free tier is very limiting.
 
 ## Resource usage measurements
-At this small scale, it is impossible to notice the strain on a modern CPU. As we scale up to a bigger stadium and more agents, we will have to come back and revisit this section.
+With this current model (8B parameters), we observed a decent chunk of the T4's 16GB VRAM being used up to train.
 
 ## Unexpected challenges
-Most of the challenges we have faced so far are expected. The only unexpected challenge we have faced so far is realizing that modeling human behavior might be even more difficult that we initially thought.
+Most of the challenges we have faced so far are expected. Training is slower than expected but there are ways to rectify that in the future.
 
 # Next Steps
 
 ## Immediate improvements needed
-We need to start modeling human behavior soon. Instead of us having rewards, tiles, and obstacles, we need to create objects for these with different properties as well as seats and other stadium components. This will allow us to further evaluate the feasibility of this project idea in modeling actual human behavior.
+We will try to get the models to start running locally to improve training times. The local GPUs we have hold 12 GB VRAM, but are nearly 3x faster on benchmarks. We believe they will be able to cut down on processing time. After that, we can look into actually fine-tuning the model.
 
 ## Technical challenges to address
-While we see no signs of strain on our small implementation, it is an open question whether our local machines will hold up to thousands of simulations of thousands of agents in large stadiums. We may have to streamline our code to make it more efficient at large scales. We may have to leverage GPUs, although we would need to find an optimized framework that supports simulation and GPU usage (maybe CuPy).
+We need to nail down a balance between a numerical metric and a human-based one and weigh those properly to judge reasoning performance. Since this model will be used to directly guide humans, it needs to output satisfactory if not great results that humans can understand.
 
 ## Questions you need help with
-We mainly need help finding the real-life data numbers that will help us validate our simulations. This is not information that is readily available, so we will have to work with what we're given.
+How valid is it to have human-based qualitative performance assessments along with numerical ones?
 
 ## Alternative approaches to try
-While this project itself does not have alternative approaches, we have considered doing this simulation in different scenarios that may be easier to do. An example of another project in this category would be modeling the most optimal way to board or deboard an airplane. There are a lot less behavior models and variables to take in to model that, and it would still keep the core idea and be an important problem to address.
+There are many base models that can be experimented with, with differing logics and parameter sizes. We could look into some of those if we find that training is too slow or the bigger model is overkill. Additionally, we have considered looking into the actual training process and optimizing that instead of results.
 
 ## What you've learned so far
-We have learned that modeling human behavior will be more difficult than original anticipated. However, the idea shows some promise provided that the neccessary data can be obtained.
+We have learned a lot about GRPO and reasoning models as this is our groups' first time looking into them in depth.
