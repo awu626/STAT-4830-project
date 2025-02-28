@@ -4,19 +4,19 @@
 Our group aims to optimize and fine-tune a GRPO model from Unsloth. Unsloth is a system that allows models to learn through GRPO (Group Relative Policy Optimization) with significantly less VRAM than before. This has made it possible turn standard models into reasoning models with custom rewards without using insane amounts of VRAM. We will be following Step 6 on Unsloth's website (https://unsloth.ai/blog/r1-reasoning) and optimizing a custom model to tackle standardized testing preparation.
 
 ## Why does this problem matter?
-A GRPO-based model is able to independently be able to provide not only the answer to a standardized test question but also reasoning behind it. Knowing this, a model highly proficient in this will significantly increase the productivity of people studying for these tests, as it will be able to provide tailored explanations to any issue students encounter.
+A GRPO-based model is able to independently be able to provide not only the answer to a standardized test question but also reasoning behind it. A highly proficient model could greatly improve study efficiency by offering tailored explanations for different problems. Similar reinforcement learning-based methods, like DeepSeek-R1 (DeepSeek-AI, 2025) and Math-Shepherd (Wang et al., 2024), have shown success in enhancing reasoning skills in language models.
 
 ## How will you measure success?
 We will measure success both numerically (by giving a practice test/practice bank) and recording scores and also qualitatively by analyzing the reasoning output and seeing if it makes sense.
 
 ## What are your constraints?
-The main constraints involve compute limitations, as training a GRPO (Gradient-based Policy Optimization) model on standardized test reasoning tasks requires substantial resources. Memory constraints may arise when fine-tuning large models, especially with long-context reasoning tasks. Additionally, data constraints include the availability of high-quality standardized test datasets with detailed explanations, as reasoning-based models require strong grounding in logical and verbal reasoning.
+The main constraints involve compute limitations, as training a GRPO (Gradient-based Policy Optimization) model on standardized test reasoning tasks requires substantial resources. Memory constraints may arise when fine-tuning large models, especially with long-context reasoning tasks. Additionally, data constraints include the availability of high-quality standardized test datasets with detailed explanations, as reasoning-based models require strong grounding in logical and verbal reasoning. 
 
 ## What data do you need?
 We will need question and answer banks from standardized tests. Our thought is that SAT/ACT preparation will be the easiest to find.
 
 ## What could go wrong?
-Several challenges could arise, including mode collapse, where the model overfits to certain types of reasoning patterns instead of learning general strategies. Sparse rewards in reinforcement learning can make optimization difficult, requiring careful reward shaping to avoid bad solutions. Lastly, scalability issues may arise if the GRPO model struggles with long-context reasoning in standardized test questions.
+Several challenges could arise, including mode collapse, where the model overfits to certain types of reasoning patterns instead of learning general strategies. Sparse rewards in reinforcement learning can make optimization difficult, requiring careful reward shaping (Setlur et al., 2024) to avoid bad solutions. Lastly, scalability issues may arise if the GRPO model struggles with long-context reasoning in standardized test questions.
 
 
 # Technical Approach
@@ -36,21 +36,24 @@ where R is the reward function and P is the policy.
 ## Algorithm/approach choice and justification
 The primary approach is Gradient-based Policy Optimization (GRPO), a policy gradient method that improves the model’s reasoning ability via reinforcement learning (RL). Justification for GRPO:
 
-Handles long-horizon reasoning → Unlike supervised fine-tuning, GRPO can optimize multi-step reasoning paths.
-Adaptive improvement → Uses reward-based updates to reinforce better reasoning chains.
-Avoids overconfidence → Unlike standard transformers, GRPO gradually improves response distribution through sampled trials.
+- Handles long-horizon reasoning → Unlike supervised fine-tuning, GRPO can optimize multi-step reasoning paths.
+- Adaptive improvement → Uses reward-based updates to reinforce better reasoning chains, following methods explored in DeepSeekMath (Shao et al., 2024).
+- Avoids overconfidence → Unlike standard transformers, GRPO gradually improves response distribution through sampled trials.
 
 
 ## Implementation strategy
-We will use standardized test datasets (MMLU, ARC, SAT/GRE datasets), and tokenize these reasoning-based questions. We'll start with a baseline model like Unsloth LLaMA-3 8B (or maybe something smaller, depending on training time). Then, we'll implement a supervised fine-tuning baseline with GRPO. It will have states (contexts) and actions (responses), and we will train and evaluate this. Finally, we will tune it on more complex reasoning tasks.
+We will use standardized test datasets (MMLU, ARC, SAT/GRE datasets), and tokenize these reasoning-based questions. We have started with a smaller model, Qwen2.5 before transituoning to a larger baseline model like Unsloth LLaMA-3 8B. his initial phase with Qwen2.5 allows us to establish a baseline before applying GRPO with slightly faster training times before we proceed with a larger model. Then, we'll implement a supervised fine-tuning baseline with GRPO. It will have states (contexts) and actions (responses), and we will train and evaluate this. Finally, we will tune it on more complex reasoning tasks.
 
 
 ## Validation methods
-We will look at the score the tuned model is able to achieve on different test banks. We will also look into Chain-of-Thought (CoT) metrics to evaluate how strong the reasoning is. Finally, we will use limited human validation to assess whether things make sense or not.
+We will look at the score the tuned model is able to achieve on We will evaluate model performance using:
+- **Quantitative metrics:** Standardized test scores on benchmark datasets.
+- **Qualitative assessment:** Chain-of-Thought (CoT) evaluations and human validation to ensure logical reasoning quality.
 
 
 ## Resource requirements and constraints
-Training time and capacity will likely be a challenge for us. Unsloth specifies that a bare minimum of 7 GB VRAM is required. We have at least two local GPUs within the group that have more than this, and also the Colab-provided Tesla T4 GPU. However, we noticed while running initial experimentation that the Tesla T4 trained quite slowly. We may consider moving to a smaller model (2.5B parameters would be a decent option) if training is too lengthy.
+Training time and capacity will likely be a challenge for us. Unsloth specifies that a bare minimum of 7 GB VRAM is required.  
+We initially planned to train on local GPUs with 12GB VRAM or a Colab Tesla T4, but our tests showed that training speed on the T4 was too slow, so we attempted to run the model on local GPUs. Unsloth LLaMA-3 8B also had a very lengthy training time, so we have pivoted to the Qwen2.5 model for now. Yet we are still facing challenges surrounding local GPU usage and might be constrained to the speed of Colab. 
 
 
 # Initial Results
@@ -62,33 +65,60 @@ We started off by running the stock notebook provided and experimenting with it 
 
 
 ## Basic performance metrics
-The base notebook trained on the T4 GPU at a rate of about 1 step per minute, and it was able to collect some reward. Due to free-tier Colab limits, we were unable to progress further but this will be rectified in the future with local training or Colab Pro. 
+The base notebook trained on the T4 GPU at a rate of about 1 step per minute, and it was able to collect some reward. Due to free-tier Colab limitations, we were unable to complete full training, which restricted our ability to test different tuning configurations. We attempted to shift training to local GPUs, but challenges with dependencies and subsystem compatibility slowed progress. If these issues persist, we may need to rely on Colab despite its slow training speed, or explore alternative solutions to improve efficiency.
 
 ## Test case results
 We observed that the rewards started increasing very slowly at first, but eventually picked up more steam. Average-of-5 rewards for steps seem to be going up steadily as the base model trains.
 
 ## Current limitations
-Our biggest issue right now is compute speed as the training is very slow on T4, and also the amount of compute units provided in the free tier is very limiting.
+The main bottleneck is slow training speeds and hardware limitations. Training on Colab has proven inefficient due to limited GPU power, and our attempts to train on local GPUs have been hampered by dependency issues and subsystem incompatibilities. We have attempted using smaller models, including Qwen2.5, but are still experiencing very slow training times. We are currently exploring alternate solutions in the training techniques to help get over these limitations. 
 
 ## Resource usage measurements
-With this current model (8B parameters), we observed a decent chunk of the T4's 16GB VRAM being used up to train.
+Our experiments so far have shown that training the models is highly resource-intensive. Training the Unsloth LLaMA-3 8B model on Colab’s Tesla T4 used nearly all available VRAM (16GB) and was significantly slow. The Qwen2.5 model, though smaller, still exhibits long training times in Collab. Colab's free tier limitations further restrict our ability to run prolonged training sessions. Unsloth LLaMA-3 8B had a very lengthy training time, so we have pivoted to the Qwen2.5 model for now. Yet we are still facing challenges surrounding local GPU usage and might be constrained to the speed of Colab.
 
 ## Unexpected challenges
-Most of the challenges we have faced so far are expected. Training is slower than expected but there are ways to rectify that in the future.
+Beyond the anticipated compute limitations, we have encountered additional challenges that have slowed our progress. First, dependency issues on local GPUs have prevented smooth training, particularly due to incompatibilities with certain libraries. Qwen2.5 had dependencies that only worked with Linux, and a subsystem also did not work. These roadblocks have delayed our ability to fully test different training configurations, and if unresolved, may necessitate reliance on slower cloud-based solutions like Colab.
+Even in our attempts to solve previous expected challenges, for example, using a smaller model Qwen2.5, we are still facing the challenge of very slow training times. 
 
 # Next Steps
 
 ## Immediate improvements needed
-We will try to get the models to start running locally to improve training times. The local GPUs we have hold 12 GB VRAM, but are nearly 3x faster on benchmarks. We believe they will be able to cut down on processing time. After that, we can look into actually fine-tuning the model.
+1. **Decide on Compute Strategy** – Determine whether to continue training on Colab or find an alternative cloud-based GPU setup.
+2. **Optimize Training Pipeline** – Explore strategies such as:
+    - Reducing batch size to speed up training.
+3. **Expand Literature Review** – Continue analyzing GRPO research papers to refine training techniques.
+
+
 
 ## Technical challenges to address
 We need to nail down a balance between a numerical metric and a human-based one and weigh those properly to judge reasoning performance. Since this model will be used to directly guide humans, it needs to output satisfactory if not great results that humans can understand.
 
+We also need to attempt at balancing training time with reasoning quality, to find the right trade-off between training speed and performance.
+
+
+
+
 ## Questions you need help with
 How valid is it to have human-based qualitative performance assessments along with numerical ones?
+
+Is there a more efficient way to train GRPO models on limited compute resources?
+
+
 
 ## Alternative approaches to try
 There are many base models that can be experimented with, with differing logics and parameter sizes. We could look into some of those if we find that training is too slow or the bigger model is overkill. Additionally, we have considered looking into the actual training process and optimizing that instead of results.
 
 ## What you've learned so far
 We have learned a lot about GRPO and reasoning models as this is our groups' first time looking into them in depth.
+
+# Literature Review
+
+Our literature review examined several sources that contributed to our understanding of GRPO models and reinforcement learning techniques applied to reasoning tasks.
+
+- **DeepSeek-R1 (DeepSeek-AI, 2025)** demonstrated how reinforcement learning with GRPO can significantly improve the reasoning capabilities of LLMs. The study found that reward-based fine-tuning improved the model’s ability to solve math, coding, and standardized test questions without requiring extensive human annotation. This validates our choice of GRPO as a reinforcement learning framework for our project.
+
+- **DeepSeekMath (Shao et al., 2024)** introduced GRPO as a variation of PPO, demonstrating how it can be used to train math reasoning models efficiently. The key takeaway from this paper was that GRPO avoids the need for a critic network by using group-based baseline rewards, which could significantly reduce memory and computational costs in our project.
+
+- **Math-Shepherd (Wang et al., 2024)** proposed a reward model that improved step-by-step verification of solutions in math problem-solving tasks. This highlighted the importance of reward shaping in RL-based reasoning models, which we plan to incorporate into our own fine-tuning process.
+
+- **Setlur et al. (2024)** explored reinforcement learning on incorrect synthetic data, showing that fine-tuning on negative samples dramatically increased training efficiency. This suggests that our training data can be augmented with incorrect answers to reinforce model learning, making training more sample-efficient.
