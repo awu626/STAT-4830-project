@@ -48,6 +48,8 @@ However, we have started experimenting with different types of transfomer archit
 ## Implementation strategy
 We will use standardized test datasets (MMLU, ARC, SAT/GRE datasets), and tokenize these reasoning-based questions. We are currently using the A100 GPU to train on Llama 3 (8B), which delivers reasonable speeds.
 
+We are also training one on FLAN-T5 by Google, which is a text-to-text transformer that is pretrained on certain things. We will be fine tuning this.
+
 
 ## Validation methods
 We will look at the score the tuned model is able to achieve on We will evaluate model performance using:
@@ -74,6 +76,8 @@ multiply(subtract(add(2, 4), 2), 4)
 into a format that is readable by the Python library SymPy (symbolic math). This will allow us to use the LLM to get the formula from the question rather than go straight to the answer.
 
 We anticipate this method to be easier and also give us a place to get reasoning, as the formula is indirectly representing the reasoning.
+
+The FLAN-T5 is able to correctly classify and output the outside nested statement after 4 iterations through the 30k, when focusing on just the outer one. We did this to check if it was learning and it is. In 96% of test case samples it got the first operator right when predicting for just one operator, which means it is learning somewhat. However, by expanding the labels to their full equations we noticed it is not learning as well for unknown reason.
 
 
 ## Basic performance metrics
