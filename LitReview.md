@@ -78,6 +78,8 @@ While GRPO presents significant theoretical advantages for symbolic reasoning ta
 		
     By integrating these targeted optimizations, Unsloth allows GRPO fine-tuning under practical hardware constraints, effectively supporting long-context (up to 20,000 tokens per completion) and multiple-trajectory training (8-way sampling) on a single A100 GPU.
 
+## 5. Transformer Architectures and T5
+The Transformer architecture forms the foundational backbone of modern large language models (Vaswani et al., 2017). It is based on attention based mechanisms, disregarding recurrence in favour for multi-head self-attention and feedforward networks. 
 
 ## Other/Future Work
 
@@ -98,4 +100,8 @@ While GRPO presents significant theoretical advantages for symbolic reasoning ta
 
 **Direct Preference Optimization by Rafailov et al.**  
 [Your Language Model is Secretly a Reward Model](https://arxiv.org/abs/2305.18290)
+
+**Transformer Architecture by Vaswani et al.**  
+[Attention Is All You Need](https://arxiv.org/abs/1706.03762)
+
 
