@@ -48,7 +48,7 @@ Neural network systems, naturally, extend form the previous two approaches in th
 ## LLM/Transformer-Based Approaches
 ### Overview
 
-**DO THIS**
+Transformer based large language models have become the central template to solving math word problems, due to their strong performance of a range of natural language processing tasks. Unlike earlier neural architectures, transformers are capable of more effective long-range reasoning, generalisation over symbolic inputs, and in-context learning capacities that allow them to quickly fit to new problem structures. As outlined in Lu et al. (2022), this shift has expanded the scope of mathematical reasoning tasks models can compute, from basic arithmetic to theorem proving and symbolic manipulation. LLM-based approaches often vary in their model scale and in their strategies, for example, whether reasoning is implicit or step-by-step, if external tools are used, and the kind of supervision is used for training. 
 
 
 ### Chain of Thought
@@ -65,7 +65,12 @@ Uesato et al. (2022) finds performance gains with process-based supervision, imp
 
 ### Multi-Step Planning
 
-**DO THIS**
+Solving complex math problems often requires decomposing them into manageable sub-tasks, something that humans use naturally, but models must learn explicitly. In LLMs, multi-step planning is normally implemented through structured prompting strategies or architectural scaffolding that encourages decomposition of the problem. One representative method is Least-to-Most Prompting (Zhou et al., 2023), where models are prompted to reduce the problem into smaller sub-problems and then solve them sequentially. This will often improve correctness by making these intermediate reasoning steps more explicit and less susceptible to error. 
+
+Other techniques include program-of-thoughts prompting (Chen et al., 2022), where reasoning is expressed as pseudocode or executable steps, and then performed outside the model. These planning techniques help reduce common pitfalls like shortcut reasoning or incorrect assumptions that occur when the model tries to complete the problem in a single step.  
+
+This is especially useful in domains where structured reasoning and accuracy matter, like geometry and symbolic logic. Multi-step approaches also often integrate well with process-based supervision techniques, as each step in the plan can be independently assessed and optimised. 
+
 
 ### External Solvers
 
