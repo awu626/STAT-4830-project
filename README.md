@@ -49,7 +49,6 @@ To run the entire pipeline (training + inference + evaluation), open the followi
 This notebook includes:
 
 - Loading and preprocessing the SAT dataset
-- Fine-tuning the FLAN-T5 model using GRPO
 - Parsing model outputs into symbolic formulas
 - Evaluating formula accuracy and end-to-end correctness using SymPy
 
