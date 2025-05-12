@@ -41,17 +41,19 @@ This was a concern from the start, but the issue of exactness popped up again an
 
 Our objective functions are twofold. Therefore first one is the percentage of answers it gets completely correct, which is the ultimate goal. The second is how close the model outputs are to the ground truth, even if they are not exactly correct (NLS)
 
+Specifically, we are looking at:
 
-
-## Specifically, we are looking at:
-
-FORMULA
+$$
+\M^* = \arg\max_{\M} M(E) = E^*
+$$
 
 where M(E) is the output of the model on problem E and E* is the ground truth as well as
 
-FORMULA
+$$
+\M^* = \arg\max_{\M} NLS(M(E), E^*)
+$$
 
-where M(E) and E* are the same as above, and the SIM() function measures the similarity ratio between the outputs.
+where M(E) and E* are the same as above, and the NLS() function measures the similarity ratio between the outputs.
 
 
 ## Algorithm/Approach Choice and Justification
