@@ -42,7 +42,9 @@ All training and inference is done through a single Colab notebook.
 
 ### 📓 Final Colab Notebook
 
-In "STAT4830Transformers", find our training loop and example validation using just 1 epoch.
+In "STAT4830UnslothFinal, find our training loop and example validation for our preliminary Unsloth Model using just 1 epoch.
+
+In "STAT4830Transformers", find our training loop and example validation for our FLAN-T5 model using just 1 epoch.
 
 In "STAT4830Demo", find our final model downloaded from hugging face and test results.
 
@@ -52,10 +54,12 @@ Notebooks include:
 - Parsing model outputs into symbolic formulas
 - Evaluating formula accuracy and end-to-end correctness using SymPy
 
-### ⚙️ Requirements (Auto-installed in Colab)
+### ⚙️ Requirements
 
-    GET FROM REQUIREMENTS.TXT!!!!!!!!!!!
-
+    
+    Unsloth (see first cell in STAT4830UnslothFinal)
+    Lightning (see first cell in STAT4830Transformers)
+    All other libraries auto-installed in Colab
     GPU backend (A100 preferred)
 
 No additional setup is needed—just make sure to select the A100 GPU runtime in Colab (Runtime > Change runtime type > GPU).
