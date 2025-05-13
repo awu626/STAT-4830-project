@@ -97,80 +97,50 @@ Notes
 - Token Limits and Question Difficulty
 
 
-# References - Not Formatted
-[TO COT OR NOT TO COT? CHAIN-OF-THOUGHT HELPS MAINLY ON MATH AND SYMBOLIC REASONING](https://arxiv.org/abs/2409.12183v1)
-- T2: Why CoT may not have been the best for this
-- CoT benefits in different kinds of tasks
-- p5 Top
+## References
 
-[Solving Math Word Problems by Combining Language Models With Symbolic Solvers](https://arxiv.org/abs/2304.09102)
-- He-Yueya et al. 2023
-- T1
-- Performance gains in combining LLM and Symbolic Solver
+1. Z. Sprague, F. Yin, et al., [To CoT or Not To CoT? Chain-of-Thought Helps Mainly on Math and Symbolic Reasoning](https://arxiv.org/abs/2409.12183v1), arXiv preprint arXiv:2409.12183v1, 2024.
 
-[Insights into Pre-training via Simpler Synthetic Tasks](https://arxiv.org/abs/2206.10139)
-- Pre-training frameworks like LIME
+2. J. He-Yueya, G. Poesia, et al., [Solving Math Word Problems by Combining Language Models With Symbolic Solvers](https://arxiv.org/abs/2304.09102), arXiv preprint arXiv:2304.09102, 2023.
 
-[A Survey of Deep Learning for Mathematical Reasoning](https://arxiv.org/abs/2212.10535)
-- Great for overarching Lit Review
-[Large Language Models are Zero-Shot Reasoners](https://arxiv.org/abs/2205.11916)
+3. Y. Wu, F. Li, et al., [Insights into Pre-training via Simpler Synthetic Tasks](https://arxiv.org/abs/2206.10139), arXiv preprint arXiv:2206.10139, 2022.
 
-[Learning to Solve Arithmetic Word Problems with Verb Categorization](https://aclanthology.org/D14-1058/)
-- Hosseini et al. 2014
-- T1&2
-- Semantic parsing 
-- 2014 paper
+4. P. Liu, L. Qiu, et al., [A Survey of Deep Learning for Mathematical Reasoning](https://arxiv.org/abs/2212.10535), arXiv preprint arXiv:2212.10535, 2023.
 
-[ReTool: Reinforcement Learning for Strategic Tool Use in LLMs](https://www.alphaxiv.org/abs/2504.11536)
+5. T. Kojima, S. Gu, et al., [Large Language Models are Zero-Shot Reasoners](https://arxiv.org/abs/2205.11916), arXiv preprint arXiv:2205.11916, 2023.
 
-[SymbolicAI: A framework for logic-based approaches combining generative models and solvers](https://www.alphaxiv.org/html/2402.00854v1)
+6. M. J. Hosseini, H. Hajishirzi, O. Etzioni, and N. Kushman, [Learning to Solve Arithmetic Word Problems with Verb Categorization](https://aclanthology.org/D14-1058/), in *Proc. EMNLP*, 2014.
 
-[LIME: Learning Inductive Bias for Primitives of Mathematical Reasoning](https://arxiv.org/pdf/2101.06223)
-- Pretraining for math reasoning benchmarks
+7. J. Feng, S. Huang, et al., [ReTool: Reinforcement Learning for Strategic Tool Use in LLMs](https://www.alphaxiv.org/abs/2504.11536), AlphaXiv preprint, 2025.
 
+8. M. Dinu, C. Leoveanu-Condrei, et al., [SymbolicAI: A Framework for Logic-Based Approaches Combining Generative Models and Solvers](https://www.alphaxiv.org/html/2402.00854v1), AlphaXiv preprint, 2024.
 
-[Large Language Models for Mathematical Reasoning: Progresses and Challenges](https://www.alphaxiv.org/html/2402.00157v1)
-- (Ahn et al 2024)
-- Great Source
-- Types of problems
+9. Y. Wu, M. Rabe, et al., *LIME: Learning Inductive Bias for Primitives of Mathematical Reasoning*, 2022.
 
-[Knowledge Augmented Complex Problem Solving with Large Language Models: A Survey](https://www.alphaxiv.org/html/2505.03418v1)
+10. J. Ahn, R. Verma, et al., [Large Language Models for Mathematical Reasoning: Progresses and Challenges](https://www.alphaxiv.org/html/2402.00157v1), AlphaXiv preprint, 2024.
 
-[Large Language Models and Mathematical Reasoning Failures](https://www.alphaxiv.org/html/2502.11574v1)
+11. D. Zheng, L. Du, et al., [Knowledge Augmented Complex Problem Solving with Large Language Models: A Survey](https://www.alphaxiv.org/html/2505.03418v1), AlphaXiv preprint, 2025.
 
-[A Survey on Mathematical Reasoning and Optimization with Large Language Models](https://www.alphaxiv.org/pdf/2503.17726)
+12. J. Boye, B. Moelle, [Large Language Models and Mathematical Reasoning Failures](https://www.alphaxiv.org/html/2502.11574v1), AlphaXiv preprint, 2025.
 
-[Mathify: Evaluating Large Language Models on Mathematical Problem Solving Tasks](https://www.alphaxiv.org/html/2404.13099v1)
+13. B. Forootani, [A Survey on Mathematical Reasoning and Optimization with Large Language Models](https://www.alphaxiv.org/pdf/2503.17726), AlphaXiv preprint, 2025.
 
-[Reasoning Models Can Be Effective Without Thinking](https://arxiv.org/abs/2504.09858)
-- NoThinking vs Thinking
-- Ma et al. 2025
+14. A. Anand, et al., [Mathify: Evaluating Large Language Models on Mathematical Problem Solving Tasks](https://www.alphaxiv.org/html/2404.13099v1), AlphaXiv preprint, 2024.
 
+15. Q. Ma, et al., [Reasoning Models Can Be Effective Without Thinking](https://arxiv.org/abs/2504.09858), arXiv preprint arXiv:2504.09858, 2025.
 
+16. A. Vaswani, et al., [Attention is All You Need](https://arxiv.org/abs/1706.03762), arXiv preprint arXiv:1706.03762, 2017.
 
+17. K. Zaporojets, et al., [Solving Arithmetic Word Problems by Scoring Equations with Recursive Neural Networks](https://arxiv.org/abs/2009.05639), arXiv preprint arXiv:2009.05639, 2021.
 
-[Attention is All You Need](https://arxiv.org/abs/1706.03762)
-- Invented transformer
-- (Vaswani et al. 2017)
+18. D. G. Bobrow, *Natural Language Input for a Computer Problem Solving System*, RAND Corporation, 1964.
 
-History of Solving Methods
-- [Solving Arithmetic Word Problems by Scoring Equations with Recursive Neural Networks](https://arxiv.org/abs/2009.05639)
-	- Zaporojets et al. 2021
-- Bobrow, D. G. (1964). Natural language input for a computer problem solving system.
+19. J. Wei, et al., [Chain-of-Thought Prompting Elicits Reasoning in Large Language Models](https://arxiv.org/abs/2201.11903), arXiv preprint arXiv:2201.11903, 2022.
 
+20. K. Cobbe, et al., [Training Verifiers to Solve Math Word Problems](https://arxiv.org/abs/2110.14168), arXiv preprint arXiv:2110.14168, 2021.
 
-[Chain-of-Thought Prompting Elicits Reasoning in Large Language Models](https://arxiv.org/abs/2201.11903)
-- Wei et al. 2022
+21. E. Lightman, et al., [Let’s Verify Step by Step](https://arxiv.org/abs/2305.20050), arXiv preprint arXiv:2305.20050, 2023.
 
-[Training Verifiers to Solve Math Word Problems](https://arxiv.org/abs/2110.14168)
-- Cobbe et al. 2021
-- GSM8K
+22. OpenAI, *GSM8K*, 2021.
 
-[Let's Verify Step by Step](https://arxiv.org/abs/2305.20050)
-- Lightman et al. 2023
-- OpenAI
-
-[Solving math word problems with process- and outcome-based feedback](https://arxiv.org/abs/2211.14275)
-- Uesato et al. 2022
-- Process and outcome-based feedback
-
+23. J. Uesato, et al., [Solving Math Word Problems with Process- and Outcome-Based Feedback](https://arxiv.org/abs/2211.14275), arXiv preprint arXiv:2211.14275, 2022.
