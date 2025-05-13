@@ -68,7 +68,7 @@ We also used a transformer-based architecture called T5. Transformers were used 
 
 At first, we just used the data to try to train for the answer using the Unsloth framework with GRPO. We used a couple different reward functions including closeness to the answer (numerically). However, this doesn’t get down to the crux of the issue which is understanding how the word problem relates to the process, and how the process relates to the answer. Thus, the model wasn’t learning anything. 
 
-Reviewing the literature, we decided to switch over to a symbol-based approach, trying to predict the formula instead of the answer. There were a number of preparations we needed to make to do this. First, we cleaned the data by extracting the numerical answer from each row. Then, we tried to process the data by fixing the formatting to be consistent as well as adding some of our own formatting (such as spacing). We did this to help limit the errors the model could make, like concatenating ‘(‘ to the end of each operator since an operator is always followed by a ‘(‘. We then used this new data with the NLS to help train the GRPO Reinforcement Learning model. After realizing that the Llama model might be a little large for our dataset, we swapped over to the transformer model with cross-entropy loss on each token - essentially, how confident was the model on each particular token and was it correct or not. We also trained on smaller (not necessarily simpler) questions, to reduce the size of the transformer’s matrix. The quicker training speed of the smaller transformer models allowed us to play with the hyperparameters more.
+Reviewing the literature, we decided to switch over to a symbol-based approach, trying to predict the formula instead of the answer. There were a number of preparations we needed to make to do this. First, we cleaned the data by extracting the numerical answer from each row. Then, we tried to process the data by fixing the formatting to be consistent as well as adding some of our own formatting (such as spacing). Finally, we used the regex/Sympy parser to filter out questions in which the listed answer does not match the formula. We did this to help limit the errors the model could make, like concatenating ‘(‘ to the end of each operator since an operator is always followed by a ‘(‘. We then used this new data with the NLS to help train the GRPO Reinforcement Learning model. After realizing that the Llama model might be a little large for our dataset, we swapped over to the transformer model with cross-entropy loss on each token - essentially, how confident was the model on each particular token and was it correct or not. We also trained on smaller (not necessarily simpler) questions, to reduce the size of the transformer’s matrix. The quicker training speed of the smaller transformer models allowed us to play with the hyperparameters more.
 
 Once the output formula is obtained, we use regex to put it in symbolic form and then call Sympy to turn it into a final answer.
 
@@ -101,13 +101,16 @@ Finally, our FLAN-T5 model gave us the best results. It was able to pretty consi
 
 ## Basic Performance Metrics
 
-The number-predicting GRPO model essentially had an accuracy of 0. As a side note, we mistakenly displayed incorrect accuracies in the final presentation as there were a couple of crucial mistakes made in the calculations. The NLS scores, however, remain the same. The formula-predicting GRPO model did better, as it actually seemed to learn the context behind the questions. It’s NLS averaged out to about 0.50 and the accuracy was significantly lower at around 0.05 (both have baseline ~0). This goes back to the issue of exactness - with many tokens in the answer, and an average NLS of 0.50, the chance that all the tokens are completely correct is very slim. Our final FLAN-T5 model performed better. Its average NLS was >0.80, and the accuracy was 0.44 (baselines of ~0.2 and ~0). While we would’ve liked to see higher accuracy, the results show that the FLAN-T5 model was making the right connections between word problem and formula.
+The number-predicting GRPO model essentially had an accuracy of 0. As a side note, we mistakenly displayed incorrect accuracies in the final presentation as there were a couple of crucial mistakes made in the calculations. The NLS scores, however, remain the same. The formula-predicting GRPO model did better, as it actually seemed to learn the context behind the questions. It’s NLS averaged out to about 0.50 and the accuracy was significantly lower at around 0.1 (both have baseline ~0). This goes back to the issue of exactness - with many tokens in the answer, and an average NLS of 0.50, the chance that all the tokens are completely correct is very slim. Our final FLAN-T5 model performed better. Its average NLS was >0.80, and the accuracy was 0.72 (baselines of ~0.2 and ~0). The results show that the FLAN-T5 model was making the right connections between word problem and formula.
 
 
 ## Test Case Results
 
-[INSERT EXAMPLE OF FLAN T5 WORKING ON A QUESTION AND NOT WORKING ON A QUESTION. MAYBE ALSO TALK ABOUT THE INFINITE GENERATION THING WITH GRPO]
+Our results fell into 4 main categories. The first screenshot shows examples where the model outputs the correct answer, and the second screenshot shows examples of when it doesn't.
 
+<img width="754" alt="Screenshot 2025-05-12 at 6 03 17 PM" src="https://github.com/user-attachments/assets/fca31c07-4e86-4f9e-87a8-a704f5c43e6c" />
+
+<img width="754" alt="Screenshot 2025-05-12 at 6 03 21 PM" src="https://github.com/user-attachments/assets/32bc940b-a776-401c-bc4f-c47ced82f774" />
 
 ## Current Limitations
 
@@ -129,7 +132,7 @@ The first unexpected challenge we had was trying to get a reward function for th
 
 For the GRPO model predicting formulas, the main unexpected challenge we faced was the issue of repeated tokens and no end of sequence (EOS) token. When this happened the model would generate part of a formula, and then it would just repeat a token until the artificial limit (most commonly ‘multiply’). 
 
-The T5 model was a lot smoother, but there were still some unexpected challenges. One was getting the training loop set up, as it comes with a lot of different parts. Its NLS score average was quite high, but the accuracy was much lower. This reflects a model which is getting the general idea, but lacks the weighting to be exact. 
+The T5 model was a lot smoother, but there were still some unexpected challenges. One was getting the training loop set up, as it comes with a lot of different parts. Its NLS score average was quite high, but the accuracy was a little lower. This reflects a model which is getting the general idea, but lacks the weighting to be exact. 
 
 # Next Steps
 
@@ -145,4 +148,182 @@ Another technical challenge to be addressed has to do with exactness discussed e
 
 ## What We Learned
 
-This project was a valuable experience for all of our group. As a collective team, we had not really worked with this type of Machine Learning before, and especially not with optimizing text-to-text transformers and LLMs. Specifically, we learned about GRPO as a concept as well as how tuning different parameters and loss functions affects model training. Despite the accuracy results not being ideal, the final NLS did get quite high, showing that our work worked. Overall, this project was a very rewarding experience for all of us.
+This project was a valuable experience for all of our group. As a collective team, we had not really worked with this type of Machine Learning before, and especially not with optimizing text-to-text transformers and LLMs. Specifically, we learned about GRPO as a concept as well as how tuning different parameters and loss functions affects model training. The final NLS did get quite high and the accuracy was decent, showing that our work worked. Overall, this project was a very rewarding experience for all of us.
+
+
+
+
+# Literature Review
+The use of Machine Learning (ML) techniques to solve math problems presents several avenues for significant improvement in various domains. On the one hand, evaluating model performance on datasets with verified answers presents a straightforward, labeled avenue for improving model performance on problem-solving and reasoning tasks. On the other hand, or more accurately on the other extreme, large language model (LLM) usage in the field of automated proof verification (and possibly generation) has the potential to revolutionize Mathematical research. 
+
+More broadly, as LLMs become more widely used throughout both academic circles and the general public, the classification and concept of 'intelligence' will likely change. In the same way that standardized testing has historically been used as a sort of human 'benchmark,' it is being used to train and improve the problem-solving intelligence of LLMs. For this reason, we chose to focus on optimization in the field of using models to solve math word problems.
+
+Given the immense variety in possible types of math problems, the approaches in optimizing solving those problems differ drastically. The scope of this review pertains to datasets that contain math word problems (MWPs) with at least a question and an answer. (Ahn et al. 2024) Presents a useful framework for categorizing the types of problems, and later extending to the types of approaches. 
+
+## Question Types and Datasets
+**Question-Answer (QA)** MWPs contain a question in word form and an answer. This answer is often solely numeric, but can be a short answer of another type. Additionally, QA answers are either just the answer itself, or, the possible answer choices, along with the correct answer. This multiple-choice data is often from multiple-choice standardized tests.
+- $\mathcal{Q}$: Beth bakes 4, or 2 dozen batches of cookies in a week. If these cookies are shared amongst 16 people equally, how many cookies does each person consume? 
+- $\mathcal{A}$: 6
+
+**Question-Equation-Answer (QEA)** MWPs include a word-problem question and the mathematical equation that, when evaluated, deterministically solves for the correct answer. Some of these datasets could more accurately be described as QE, as they do not contain the answer explicitly. 
+- **Note: The fact that they don't contain the answer doesn't really matter. Several studies and approahces have concluded that, rather than solving directly for an answer, LLM's strengths in the realm of simpler MPW solving are in parsing out the formula out of the word problem, rather than solving for the mathematical answer directly.**
+- $\mathcal{Q}$: Beth bakes 4, or 2 dozen batches of cookies in a week. If these cookies are shared amongst 16 people equally, how many cookies does each person consume? 
+- $\mathcal{E}$: ( ( 4 * 2) * 12 ) / 16
+- $\mathcal{A}$: 6
+
+**Question-Rationale-Answer (QRA)** MWP datasets are the final type within the scope of this review. These, like the name implies, give the question, the rationale behind the answer, and the answer itself. 
+- $\mathcal{Q}$: Beth bakes 4, or 2 dozen batches of cookies in a week. If these cookies are shared amongst 16 people equally, how many cookies does each person consume? 
+- $\mathcal{R}$: Beth bakes 4 2 dozen batches of cookies for a total of 4 ∗ 2 =<< 4 ∗ 2 = 8 >> 8 dozen cookies. There are 12 cookies in a dozen and she makes 8 dozen cookies for a total of 12∗8 =<< 12∗8 = 96 >> 96 cookies. She splits the 96 cookies equally amongst 16 people so they each eat 96/16 =<< 96/16 = 6 >> 6 cookies. 
+- $\mathcal{A}$: 6
+
+## Pre-Transformer Approaches
+### Overview
+While all of the details and intricacies pertaining to problem-solving strategies and tools do not solely come from the three categories outlined above, the vast majority can be applied to these sorts of problems, or offer insight into technique successes on certain types of problems and failure in others. Most approaches to using LLMs for mathematical problem solving use a wide variety of techniques, so this overview of approaches aims to articulate the differentiating features of approaches. 
+Additionally, the approaches we outline are not close to a comprehensive overview of all that exists. Rather, we aim to provide a context and foundation in optimization literature through which to analyze our project, choices, outcomes, and thought process.
+
+### Approaches (Pre-Transformer)
+Our project, and much of the literature review, focuses on transformer enabled MWP solving strategies. However, an overview of the pre-transformer approaches gives insight into the more novel techniques. 
+Zaporojets et al. (2021) conveniently categorizes approaches in solving arithmetic word problems into the following main categories: (i) Rule-based systems, (ii) Statistical systems, and (iii) Neural network systems.
+
+I. Rule-based systems
+The first important rule-based approach is found in (Bobrow 1964). Specifically, STUDENT is a rule-based parsing program that turns word problems into number values and operations. Notably, this lays the groundwork for graphical approaches in the field, as the values outlined in the problem are nodes and the relationships between those values, the calculations, are edges.
+Later extensions of this work implemented more rules and more specific relationships, like those of speed rates (like km/h) or groups of items (like a dozen meaning twelve).
+
+II. Statistical systems
+Statistical systems (often) similarly parse out the problem into a tree representation, but in a different way. Statistical systems capture patterns in word-problem data and attempts to predict nodes and edges through that.
+One paper that inspired our thinking was Hosseini et al. (2014). This paper cleverly uses verb categorization to solve simple arithmetic WPs. This method, called ARIS, is able to categorize verbs with 81.2% accuracy and solves 77.7% of elementary school math problems.
+
+III. Neural network systems
+Neural network systems, naturally, extend form the previous two approaches in the realm of neural networks. These are much closer in approach to transformer-enabled LLM solving.
+
+
+## LLM/Transformer-Based Approaches
+### Overview
+
+Transformer based large language models have become the central template to solving math word problems, due to their strong performance of a range of natural language processing tasks. Unlike earlier neural architectures, transformers are capable of more effective long-range reasoning, generalisation over symbolic inputs, and in-context learning capacities that allow them to quickly fit to new problem structures. As outlined in Lu et al. (2022), this shift has expanded the scope of mathematical reasoning tasks models can compute, from basic arithmetic to theorem proving and symbolic manipulation. LLM-based approaches often vary in their model scale and in their strategies, for example, whether reasoning is implicit or step-by-step, if external tools are used, and the kind of supervision is used for training. 
+
+
+### Chain of Thought
+Among the most clear categorizing factors for MWP solving approaches is whether or not the strategy implements Chain of Thought (CoT). Using this approach, LLMs 'reason' by producing intermediate reasoning steps instead of outputting a final answer. 
+
+Wei et al. (2023) demonstrated the ability for LLMs to reason through chain-of-thought prompting. This unlocked significant development in implementing LLMs for problem solving, along with other advances in the field. Notably, Wei et al. (2022) implemented chain-of-thought for reasoning on the GSM8K (Cobbe et al. 2021) dataset, one of the most widely used data sets for elementary school level MWPs. 
+
+### Process/Outcome-Based Supervision
+Uesato et al. (2022) introduces the notion of separating process and outcome-based supervision in the context of chain-of-thought. 
+Outcome-based supervision refers to training methods that evaluate only model correctness. Process-based supervision, however, evaluates intermediate steps in the chain-of-thought reasoning process for correctness and includes errors pertaining to these, in addition to final answer correctness.
+This distinction can be in the context of a policy model or the more general reasoning model. In both cases, the distinction generally refers to grading intermediate reasoning steps for correctness versus outcome-only. Process-based supervision has a number of possibilities in terms of implementation strategy. Most often, a QRA dataset is used to train the model to reason intermediate steps between the question and answer. However, especially in applications outside the simpler MWP domain, other strategies are used for this purpose.
+Uesato et al. (2022) finds performance gains with process-based supervision, improving final answer error rate from 16.8% to 12.7% by using this technique. Lightman et al. (2023) focuses instead on training only a policy model, without tuning the generative CoT model itself, and obtains similar results.
+
+
+### Multi-Step Planning
+
+Solving complex math problems often requires decomposing them into manageable sub-tasks, something that humans use naturally, but models must learn explicitly. In LLMs, multi-step planning is normally implemented through structured prompting strategies or architectural scaffolding that encourages decomposition of the problem. One representative method is Least-to-Most Prompting (Zhou et al., 2023), where models are prompted to reduce the problem into smaller sub-problems and then solve them sequentially. This will often improve correctness by making these intermediate reasoning steps more explicit and less susceptible to error. 
+
+Other techniques include program-of-thoughts prompting (Chen et al., 2022), where reasoning is expressed as pseudocode or executable steps, and then performed outside the model. These planning techniques help reduce common pitfalls like shortcut reasoning or incorrect assumptions that occur when the model tries to complete the problem in a single step.  
+
+This is especially useful in domains where structured reasoning and accuracy matter, like geometry and symbolic logic. Multi-step approaches also often integrate well with process-based supervision techniques, as each step in the plan can be independently assessed and optimised. 
+
+
+### External Solvers
+
+**DO THIS**
+
+# Bridging Literature and Our Work
+## Introduction
+Our approaches, while simpler than some of the more well-resourced approaches found in the academic literature, can be more comprehensively understood in the context of this literature. While the following section is by no means extensive, it represents the literature we have identified most related to our approaches in terms of initial approach, results, decisions for further approaches, etc. 
+
+
+Notes
+- CoT or Not
+- Zero or Multi-Shot CoT
+- Tool-Augmented
+- Thinking or NoThinking
+	- Ma et al. 2025
+
+- Symbolic Solvers
+	- He-Yueya et al. 2023
+	- Sprague et al. 2024
+- Model Size and CoT
+	- Kojima and Gu, 2022
+
+- Token Limits and Question Difficulty
+
+
+# References - Not Formatted
+[TO COT OR NOT TO COT? CHAIN-OF-THOUGHT HELPS MAINLY ON MATH AND SYMBOLIC REASONING](https://arxiv.org/abs/2409.12183v1)
+- T2: Why CoT may not have been the best for this
+- CoT benefits in different kinds of tasks
+- p5 Top
+
+[Solving Math Word Problems by Combining Language Models With Symbolic Solvers](https://arxiv.org/abs/2304.09102)
+- He-Yueya et al. 2023
+- T1
+- Performance gains in combining LLM and Symbolic Solver
+
+[Insights into Pre-training via Simpler Synthetic Tasks](https://arxiv.org/abs/2206.10139)
+- Pre-training frameworks like LIME
+
+[A Survey of Deep Learning for Mathematical Reasoning](https://arxiv.org/abs/2212.10535)
+- Great for overarching Lit Review
+[Large Language Models are Zero-Shot Reasoners](https://arxiv.org/abs/2205.11916)
+
+[Learning to Solve Arithmetic Word Problems with Verb Categorization](https://aclanthology.org/D14-1058/)
+- Hosseini et al. 2014
+- T1&2
+- Semantic parsing 
+- 2014 paper
+
+[ReTool: Reinforcement Learning for Strategic Tool Use in LLMs](https://www.alphaxiv.org/abs/2504.11536)
+
+[SymbolicAI: A framework for logic-based approaches combining generative models and solvers](https://www.alphaxiv.org/html/2402.00854v1)
+
+[LIME: Learning Inductive Bias for Primitives of Mathematical Reasoning](https://arxiv.org/pdf/2101.06223)
+- Pretraining for math reasoning benchmarks
+
+
+[Large Language Models for Mathematical Reasoning: Progresses and Challenges](https://www.alphaxiv.org/html/2402.00157v1)
+- (Ahn et al 2024)
+- Great Source
+- Types of problems
+
+[Knowledge Augmented Complex Problem Solving with Large Language Models: A Survey](https://www.alphaxiv.org/html/2505.03418v1)
+
+[Large Language Models and Mathematical Reasoning Failures](https://www.alphaxiv.org/html/2502.11574v1)
+
+[A Survey on Mathematical Reasoning and Optimization with Large Language Models](https://www.alphaxiv.org/pdf/2503.17726)
+
+[Mathify: Evaluating Large Language Models on Mathematical Problem Solving Tasks](https://www.alphaxiv.org/html/2404.13099v1)
+
+[Reasoning Models Can Be Effective Without Thinking](https://arxiv.org/abs/2504.09858)
+- NoThinking vs Thinking
+- Ma et al. 2025
+
+
+
+
+[Attention is All You Need](https://arxiv.org/abs/1706.03762)
+- Invented transformer
+- (Vaswani et al. 2017)
+
+History of Solving Methods
+- [Solving Arithmetic Word Problems by Scoring Equations with Recursive Neural Networks](https://arxiv.org/abs/2009.05639)
+	- Zaporojets et al. 2021
+- Bobrow, D. G. (1964). Natural language input for a computer problem solving system.
+
+
+[Chain-of-Thought Prompting Elicits Reasoning in Large Language Models](https://arxiv.org/abs/2201.11903)
+- Wei et al. 2022
+
+[Training Verifiers to Solve Math Word Problems](https://arxiv.org/abs/2110.14168)
+- Cobbe et al. 2021
+- GSM8K
+
+[Let's Verify Step by Step](https://arxiv.org/abs/2305.20050)
+- Lightman et al. 2023
+- OpenAI
+
+[Solving math word problems with process- and outcome-based feedback](https://arxiv.org/abs/2211.14275)
+- Uesato et al. 2022
+- Process and outcome-based feedback
+
+
