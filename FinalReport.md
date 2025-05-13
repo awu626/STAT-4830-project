@@ -249,7 +249,7 @@ This approach was, at least conceptually, closest to our final approach with FLA
 Another paper that gave insight into the strength of switching to a symbolic solver approach was He-Yueya et al. (2023). That paper showed a 20% gain in performance on the ALGEBRA benchmark using declarative and incremental representations interfacing with external tools rather than simple Program-Aided Language model approaches. 
 
 The final insight into this approach we identified in the literature was in Sprague et al. (2025)
-![[Pasted image 20250513134950.png]]
+![Screenshot 2025-05-13 at 5 05 28 PM](https://github.com/user-attachments/assets/198edc0c-7635-400f-8c34-0ff5f960f2f1)
 This chart shows performance gains across the board using tool solvers on the Math datasets. Additionally, it shows the relative weakness of purely a direct approach, results mirrored in the change in our outcomes throughout our approaches.
 
 In our case, however, the switch from the first to the second approach did not see a large gain in performance. He-Yueya et al. (2023) notes that prior work that has experimented on using LLMs to generate equations and solve them with external solvers "generally improves final performance by less than 5% on GSM8K" (p2). So, this paper shows that our gain in performance was in line with literature, and that its overall small effect also was in line with previous research.
@@ -266,13 +266,14 @@ These findings paint a picture that can help explain why CoT was not very succes
 ## Model Size
 
 One finding that could help explain the results for CoT is found in Kojima et al. (2023).
-![[Pasted image 20250513140930.png]]
+![Screenshot 2025-05-13 at 5 05 38 PM](https://github.com/user-attachments/assets/ccdf2ef0-6bb1-4e84-8a71-51e4ce039e2b)
+
 The chart above shows model performance in terms of model size and CoT. It finds that CoT benefits kick in above the 8B parameter range. Notably, our Llama model we used was 8B parameters. While the scope and focus of our project and the above research is not identical, it is an interesting finding nonetheless. Perhaps future research will find optimal use-cases for CoT in terms of model size, application, and other parameters.
 
 ## Problem Difficulty
 
 Another consideration in identifying how our process compared to the existing body of literature pertains to the types of problems. The graphic below, adapted from Ma et al. (2025), shows model performance with token limits on three Math problem data sets, easier on the left and harder on the right.
-![[Pasted image 20250513140727.png]]
+![Screenshot 2025-05-13 at 5 05 45 PM](https://github.com/user-attachments/assets/6063a48c-4013-42aa-a04f-2e307204dbc1)
 
 The problems contained in our dataset were easier than the above problems, but their findings can highlight some elements of our findings. The chart illustrates performance differences between their "NoThinking" and "Thinking" approaches. NoThinking bypasses the CoT reasoning in reasoning models and has it directly output the answer. This prompt-engineering technique shows considerable performance advantages in a token-limited setting. Given that our limit was just ~2k tokens, CoT could have hurt our results more than it helped. 
 Another interesting finding is that of problem difficulty. While there are no major consistent patterns in this domain, looking at our results in the context of being closer to the AMC than the other two benchmarks gives us context to compare our findings to those of other approaches. 
