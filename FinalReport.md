@@ -77,7 +77,7 @@ Once the output formula is obtained, we use regex to put it in symbolic form and
 
 We check the accuracy of the models on a sample of a test set, essentially creating an SAT-type exam out of our test set. We also calculate the average NLS across the sample to compare models with each other.
 
-##mResource Requirements and Constraints
+## Resource Requirements and Constraints
 
 The GRPO model had some pretty stiff resource requirements. Unsloth’s framework allows models to be trained on a single GPU, but it still takes up a vast majority of that GPU. Even on Colab’s A100 GPU with 40 GB of available VRAM, it takes up most of the GPU and is still quite slow. 
 
@@ -101,7 +101,7 @@ Finally, our FLAN-T5 model gave us the best results. It was able to pretty consi
 
 ## Basic Performance Metrics
 
-The number-predicting GRPO model essentially had an accuracy of 0. As a side note, we mistakenly displayed incorrect accuracies in the final presentation as there were a couple of crucial mistakes made in the calculations. The NLS scores, however, remain the same. The formula-predicting GRPO model did better, as it actually seemed to learn the context behind the questions. It’s NLS averaged out to about 0.50 and the accuracy was significantly lower at around 0.1 (both have baseline ~0). This goes back to the issue of exactness - with many tokens in the answer, and an average NLS of 0.50, the chance that all the tokens are completely correct is very slim. Our final FLAN-T5 model performed better. Its average NLS was >0.80, and the accuracy was 0.72 (baselines of ~0.2 and ~0). The results show that the FLAN-T5 model was making the right connections between word problem and formula.
+The number-predicting GRPO model essentially had an accuracy of 0. As a side note, we mistakenly displayed incorrect accuracies in the final presentation for GRPO as there were a couple of crucial mistakes made in the calculations. The NLS scores, however, remain the same. The formula-predicting GRPO model did better, as it actually seemed to learn the context behind the questions. It’s NLS averaged out to about 0.50 and the accuracy was significantly lower at around 0.1 (both have baseline ~0). This goes back to the issue of exactness - with many tokens in the answer, and an average NLS of 0.50, the chance that all the tokens are completely correct is very slim. Our final FLAN-T5 model performed better. Its average NLS was >0.80, and the accuracy was 0.72 (baselines of ~0.2 and ~0). The results show that the FLAN-T5 model was making the right connections between word problem and formula.
 
 
 ## Test Case Results
