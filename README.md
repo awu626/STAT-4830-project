@@ -13,7 +13,7 @@ This project aims to optimize a Transformer-based model to extract mathematical 
 **Key Contributions:**
 - Developed a formula-to-answer pipeline using regex and SymPy.
 - Trained and Optimized FLAN-T5 model on answer correctness.
-- Achieved ~78% symbolic similarity and ~__% answer-level correctness on test data.
+- Achieved ~81% symbolic similarity and ~72% answer-level correctness on test data.
 
 ## 🗂️ Repository Structure
 ```bash
@@ -28,7 +28,7 @@ This project aims to optimize a Transformer-based model to extract mathematical 
 ```
 
 ## ⚙️ Setup Instructions
-We recommend using Google Colab with an A100 GPU if you want to train models. The overall model training takes ~1 hour to complete. To ensure all dependencies are met, place the requirements.txt file in your working Colab directory and run:
+We recommend using Google Colab with an A100 GPU if you want to train models. The overall model training takes ~1 hour to complete, but for the sake of showing our work we have set it to 1 epoch (should take a couple minutes). Results in the "STAT4830Transformers" notebook will NOT be good. See better results in STAT4830Demo. To ensure all dependencies are met, place the requirements.txt file in your working Colab directory and run:
 
 ```bash
 pip install -r path-to-your-requirements.txt
@@ -42,11 +42,11 @@ All training and inference is done through a single Colab notebook.
 
 ### 📓 Final Colab Notebook
 
-To run the entire pipeline (training + inference + evaluation), open the following notebook:
+In "STAT4830Transformers", find our training loop and example validation using just 1 epoch.
 
-👉 Colab Notebook: SAT Formula Extraction
+In "STAT4830Demo", find our final model downloaded from hugging face and test results.
 
-This notebook includes:
+Notebooks include:
 
 - Loading and preprocessing the SAT dataset
 - Parsing model outputs into symbolic formulas
