@@ -229,101 +229,103 @@ This is especially useful in domains where structured reasoning and accuracy mat
 **DO THIS**
 
 # Bridging Literature and Our Work
+
 ## Introduction
-Our approaches, while simpler than some of the more well-resourced approaches found in the academic literature, can be more comprehensively understood in the context of this literature. While the following section is by no means extensive, it represents the literature we have identified most related to our approaches in terms of initial approach, results, decisions for further approaches, etc. 
+
+Our approaches, while simpler than some of the more well-resourced approaches found in the academic literature, can be more comprehensively understood in the context of this literature. While the following section is by no means extensive, it represents the literature we have identified most related to our approaches in terms of initial approach, results, decisions for further approaches, etc.
 
 
-Notes
-- CoT or Not
-- Zero or Multi-Shot CoT
-- Tool-Augmented
-- Thinking or NoThinking
-	- Ma et al. 2025
+## Approaches
 
-- Symbolic Solvers
-	- He-Yueya et al. 2023
-	- Sprague et al. 2024
-- Model Size and CoT
-	- Kojima and Gu, 2022
-
-- Token Limits and Question Difficulty
+Broadly, we took three approaches to this project. The first was a direct-solve approach through reasoning and GRPO. The second was similar, but instead of focusing on solving the problems directly, we optimized for a semantic parsing of the MWP, turning it into a formula. The final approach was our FLAN-T5, which was the best-performing method of the three.
 
 
-# References - Not Formatted
-[TO COT OR NOT TO COT? CHAIN-OF-THOUGHT HELPS MAINLY ON MATH AND SYMBOLIC REASONING](https://arxiv.org/abs/2409.12183v1)
-- T2: Why CoT may not have been the best for this
-- CoT benefits in different kinds of tasks
-- p5 Top
+## Symbolic Solvers
 
-[Solving Math Word Problems by Combining Language Models With Symbolic Solvers](https://arxiv.org/abs/2304.09102)
-- He-Yueya et al. 2023
-- T1
-- Performance gains in combining LLM and Symbolic Solver
+The first major change in approach was from a direct solve approach to a semantic parsing approach. One paper that gave us insight, in hindsight, into the utility of this decision was Hosseini et al. (2014). As discussed above, this 2014 paper's approach called ARIS was able to achieve 77.7% accuracy on primary school word problems, similar in scale and difficulty to the ones in our data set.
 
-[Insights into Pre-training via Simpler Synthetic Tasks](https://arxiv.org/abs/2206.10139)
-- Pre-training frameworks like LIME
+This approach was, at least conceptually, closest to our final approach with FLAN-T5. This is since our first approach was direct, so did not focus on categorization and parsing, and subsequent approaches used parsing and then a simpler model. ARIS, a pre-transformer method, was surprisingly accurate while taking a purer NLP approach. As later discussed, much of the error in the Llama approaches could be attributed to hallucinations in intermediate steps.
 
-[A Survey of Deep Learning for Mathematical Reasoning](https://arxiv.org/abs/2212.10535)
-- Great for overarching Lit Review
-[Large Language Models are Zero-Shot Reasoners](https://arxiv.org/abs/2205.11916)
+Another paper that gave insight into the strength of switching to a symbolic solver approach was He-Yueya et al. (2023). That paper showed a 20% gain in performance on the ALGEBRA benchmark using declarative and incremental representations interfacing with external tools rather than simple Program-Aided Language model approaches. 
 
-[Learning to Solve Arithmetic Word Problems with Verb Categorization](https://aclanthology.org/D14-1058/)
-- Hosseini et al. 2014
-- T1&2
-- Semantic parsing 
-- 2014 paper
+The final insight into this approach we identified in the literature was in Sprague et al. (2025)
+![[Pasted image 20250513134950.png]]
+This chart shows performance gains across the board using tool solvers on the Math datasets. Additionally, it shows the relative weakness of purely a direct approach, results mirrored in the change in our outcomes throughout our approaches.
 
-[ReTool: Reinforcement Learning for Strategic Tool Use in LLMs](https://www.alphaxiv.org/abs/2504.11536)
+In our case, however, the switch from the first to the second approach did not see a large gain in performance. He-Yueya et al. (2023) notes that prior work that has experimented on using LLMs to generate equations and solve them with external solvers "generally improves final performance by less than 5% on GSM8K" (p2). So, this paper shows that our gain in performance was in line with literature, and that its overall small effect also was in line with previous research.
 
-[SymbolicAI: A framework for logic-based approaches combining generative models and solvers](https://www.alphaxiv.org/html/2402.00854v1)
+## Chain of Thought
+The second major area of focus in analyzing connections between the results we found and the existing literature on our topic concerns CoT approaches. Sprague et al. (2025), notably, finds the places where CoT helps more and less.
 
-[LIME: Learning Inductive Bias for Primitives of Mathematical Reasoning](https://arxiv.org/pdf/2101.06223)
-- Pretraining for math reasoning benchmarks
+Sprague et al. (2025) outlines the following major findings: "Finding 1: CoT only helps substantially on problems requiring mathematical, logical, or algorithmic reasoning," and "Finding 2: CoT primarily helps with the execution step that performs computation and symbolic manipulation, but falls short of what LLMs with tool augmentation can do" (p. 2).
+Additionally, they note that the results "paint a picture that CoT's utility is often circumscribed by tool augmentation: on problems where CoT helps, we already have more powerful tools than CoT that we can employ" (p. 2).
+
+These findings paint a picture that can help explain why CoT was not very successful in our case. Our problems were relatively simple and required little reasoning, so we hypothesize that any reasoning gains using CoT may have been counteracted by hallucinations in intermediate steps in the reasoning process, along with a myriad of other possible issues that a CoT approach brings. 
 
 
-[Large Language Models for Mathematical Reasoning: Progresses and Challenges](https://www.alphaxiv.org/html/2402.00157v1)
-- (Ahn et al 2024)
-- Great Source
-- Types of problems
+## Model Size
 
-[Knowledge Augmented Complex Problem Solving with Large Language Models: A Survey](https://www.alphaxiv.org/html/2505.03418v1)
+One finding that could help explain the results for CoT is found in Kojima et al. (2023).
+![[Pasted image 20250513140930.png]]
+The chart above shows model performance in terms of model size and CoT. It finds that CoT benefits kick in above the 8B parameter range. Notably, our Llama model we used was 8B parameters. While the scope and focus of our project and the above research is not identical, it is an interesting finding nonetheless. Perhaps future research will find optimal use-cases for CoT in terms of model size, application, and other parameters.
 
-[Large Language Models and Mathematical Reasoning Failures](https://www.alphaxiv.org/html/2502.11574v1)
+## Problem Difficulty
 
-[A Survey on Mathematical Reasoning and Optimization with Large Language Models](https://www.alphaxiv.org/pdf/2503.17726)
+Another consideration in identifying how our process compared to the existing body of literature pertains to the types of problems. The graphic below, adapted from Ma et al. (2025), shows model performance with token limits on three Math problem data sets, easier on the left and harder on the right.
+![[Pasted image 20250513140727.png]]
 
-[Mathify: Evaluating Large Language Models on Mathematical Problem Solving Tasks](https://www.alphaxiv.org/html/2404.13099v1)
+The problems contained in our dataset were easier than the above problems, but their findings can highlight some elements of our findings. The chart illustrates performance differences between their "NoThinking" and "Thinking" approaches. NoThinking bypasses the CoT reasoning in reasoning models and has it directly output the answer. This prompt-engineering technique shows considerable performance advantages in a token-limited setting. Given that our limit was just ~2k tokens, CoT could have hurt our results more than it helped. 
+Another interesting finding is that of problem difficulty. While there are no major consistent patterns in this domain, looking at our results in the context of being closer to the AMC than the other two benchmarks gives us context to compare our findings to those of other approaches. 
 
-[Reasoning Models Can Be Effective Without Thinking](https://arxiv.org/abs/2504.09858)
-- NoThinking vs Thinking
-- Ma et al. 2025
-
-
+## Conclusion
+Overall, many facets of our approaches have connections with findings in the literature we explored. To connect some of the above ideas, it is important to note that our final approach, FLAN-T5, has 250M parameters, compared to Llama's 8B. Using a model with 3% of the parameters yielded better results. Through this analysis, we hypothesize that this is mainly due to CoT not producing measurable benefits in smaller models, the token limits making a more direct parsing method superior, and the problem difficulty. Given that, in 2014 Hosseini et al. (2014) was able to implement a very successful but much simpler approach to achieve a similar goal as us, it is reasonable to conclude that a CoT approach would have made more sense for a harder problem set, not the one we used.
 
 
-[Attention is All You Need](https://arxiv.org/abs/1706.03762)
-- Invented transformer
-- (Vaswani et al. 2017)
+## References
 
-History of Solving Methods
-- [Solving Arithmetic Word Problems by Scoring Equations with Recursive Neural Networks](https://arxiv.org/abs/2009.05639)
-	- Zaporojets et al. 2021
-- Bobrow, D. G. (1964). Natural language input for a computer problem solving system.
+1. Z. Sprague, F. Yin, et al., [To CoT or Not To CoT? Chain-of-Thought Helps Mainly on Math and Symbolic Reasoning](https://arxiv.org/abs/2409.12183v1), arXiv preprint arXiv:2409.12183v1, 2024.
 
+2. J. He-Yueya, G. Poesia, et al., [Solving Math Word Problems by Combining Language Models With Symbolic Solvers](https://arxiv.org/abs/2304.09102), arXiv preprint arXiv:2304.09102, 2023.
 
-[Chain-of-Thought Prompting Elicits Reasoning in Large Language Models](https://arxiv.org/abs/2201.11903)
-- Wei et al. 2022
+3. Y. Wu, F. Li, et al., [Insights into Pre-training via Simpler Synthetic Tasks](https://arxiv.org/abs/2206.10139), arXiv preprint arXiv:2206.10139, 2022.
 
-[Training Verifiers to Solve Math Word Problems](https://arxiv.org/abs/2110.14168)
-- Cobbe et al. 2021
-- GSM8K
+4. P. Liu, L. Qiu, et al., [A Survey of Deep Learning for Mathematical Reasoning](https://arxiv.org/abs/2212.10535), arXiv preprint arXiv:2212.10535, 2023.
 
-[Let's Verify Step by Step](https://arxiv.org/abs/2305.20050)
-- Lightman et al. 2023
-- OpenAI
+5. T. Kojima, S. Gu, et al., [Large Language Models are Zero-Shot Reasoners](https://arxiv.org/abs/2205.11916), arXiv preprint arXiv:2205.11916, 2023.
 
-[Solving math word problems with process- and outcome-based feedback](https://arxiv.org/abs/2211.14275)
-- Uesato et al. 2022
-- Process and outcome-based feedback
+6. M. J. Hosseini, H. Hajishirzi, O. Etzioni, and N. Kushman, [Learning to Solve Arithmetic Word Problems with Verb Categorization](https://aclanthology.org/D14-1058/), in *Proc. EMNLP*, 2014.
 
+7. J. Feng, S. Huang, et al., [ReTool: Reinforcement Learning for Strategic Tool Use in LLMs](https://www.alphaxiv.org/abs/2504.11536), AlphaXiv preprint, 2025.
+
+8. M. Dinu, C. Leoveanu-Condrei, et al., [SymbolicAI: A Framework for Logic-Based Approaches Combining Generative Models and Solvers](https://www.alphaxiv.org/html/2402.00854v1), AlphaXiv preprint, 2024.
+
+9. Y. Wu, M. Rabe, et al., *LIME: Learning Inductive Bias for Primitives of Mathematical Reasoning*, 2022.
+
+10. J. Ahn, R. Verma, et al., [Large Language Models for Mathematical Reasoning: Progresses and Challenges](https://www.alphaxiv.org/html/2402.00157v1), AlphaXiv preprint, 2024.
+
+11. D. Zheng, L. Du, et al., [Knowledge Augmented Complex Problem Solving with Large Language Models: A Survey](https://www.alphaxiv.org/html/2505.03418v1), AlphaXiv preprint, 2025.
+
+12. J. Boye, B. Moelle, [Large Language Models and Mathematical Reasoning Failures](https://www.alphaxiv.org/html/2502.11574v1), AlphaXiv preprint, 2025.
+
+13. B. Forootani, [A Survey on Mathematical Reasoning and Optimization with Large Language Models](https://www.alphaxiv.org/pdf/2503.17726), AlphaXiv preprint, 2025.
+
+14. A. Anand, et al., [Mathify: Evaluating Large Language Models on Mathematical Problem Solving Tasks](https://www.alphaxiv.org/html/2404.13099v1), AlphaXiv preprint, 2024.
+
+15. Q. Ma, et al., [Reasoning Models Can Be Effective Without Thinking](https://arxiv.org/abs/2504.09858), arXiv preprint arXiv:2504.09858, 2025.
+
+16. A. Vaswani, et al., [Attention is All You Need](https://arxiv.org/abs/1706.03762), arXiv preprint arXiv:1706.03762, 2017.
+
+17. K. Zaporojets, et al., [Solving Arithmetic Word Problems by Scoring Equations with Recursive Neural Networks](https://arxiv.org/abs/2009.05639), arXiv preprint arXiv:2009.05639, 2021.
+
+18. D. G. Bobrow, *Natural Language Input for a Computer Problem Solving System*, RAND Corporation, 1964.
+
+19. J. Wei, et al., [Chain-of-Thought Prompting Elicits Reasoning in Large Language Models](https://arxiv.org/abs/2201.11903), arXiv preprint arXiv:2201.11903, 2022.
+
+20. K. Cobbe, et al., [Training Verifiers to Solve Math Word Problems](https://arxiv.org/abs/2110.14168), arXiv preprint arXiv:2110.14168, 2021.
+
+21. E. Lightman, et al., [Let’s Verify Step by Step](https://arxiv.org/abs/2305.20050), arXiv preprint arXiv:2305.20050, 2023.
+
+22. OpenAI, *GSM8K*, 2021.
+
+23. J. Uesato, et al., [Solving Math Word Problems with Process- and Outcome-Based Feedback](https://arxiv.org/abs/2211.14275), arXiv preprint arXiv:2211.14275, 2022.
 
