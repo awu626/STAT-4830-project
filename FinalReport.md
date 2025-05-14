@@ -223,11 +223,6 @@ Other techniques include program-of-thoughts prompting (Chen et al., 2022), wher
 
 This is especially useful in domains where structured reasoning and accuracy matter, like geometry and symbolic logic. Multi-step approaches also often integrate well with process-based supervision techniques, as each step in the plan can be independently assessed and optimised. 
 
-
-### External Solvers
-
-**DO THIS**
-
 # Bridging Literature and Our Work
 
 ## Introduction
