@@ -223,6 +223,12 @@ Other techniques include program-of-thoughts prompting (Chen et al., 2022), wher
 
 This is especially useful in domains where structured reasoning and accuracy matter, like geometry and symbolic logic. Multi-step approaches also often integrate well with process-based supervision techniques, as each step in the plan can be independently assessed and optimised. 
 
+### External Solvers
+
+One major advancement in LLM-based math reasoning is the use of external symbolic solvers. While LLMs are good at language understanding and flexible reasoning, they often struggle on exact arithmetic or symbolic manipulation. To help with this, recent approaches like He-Yueya et al. (2023) and Lu et al. (2023) have proposed hybrid systems where the LLM generates partial reasoning chains or executable expressions that are then passed to a symbolic engine for validation or computation. 
+
+This strategy, commonly referred to as tool-augmented reasoning, has shown strong performance on benchmarks requiring numerical accuracy or formal logic.
+
 # Bridging Literature and Our Work
 
 ## Introduction
